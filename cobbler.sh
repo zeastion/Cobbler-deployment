@@ -14,7 +14,10 @@ NODEPASS="qwe123"
 
 # Hostname
 
-echo -e "$HOSTIP\t$HOSTNAME" >> /etc/hosts
+more /etc/hosts | grep "$HOSTNAME" >/dev/null 2>&1
+if [ $? -ne 0 ];then
+    echo -e "$HOSTIP\t$HOSTNAME" >> /etc/hosts
+fi
 
 # Iptables
 
@@ -30,6 +33,7 @@ lokkit -p 443:tcp
 lokkit -p 25150:udp
 lokkit -p 25151:tcp
 lokkit -p 25152:tcp
+lokkit -p 8140:tcp
 
 echo -e "-------------\n| Iptables  -\n-------------"
 iptables -S
@@ -48,7 +52,7 @@ echo -e "\n-------------\n| Add repo  -\n-------------"
 yum install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm -y >/dev/null 2>&1
 
 if [ $? -ne 0 ] && [ ! -f /etc/yum.repos.d/epel.repo ]; then
-    echo -e "\n ***   YUM 源添加失败  ***\n"
+    echo -e "\n ***  Add EPEL Repository Failed  ***\n"
     exit
 else
     yum repolist
@@ -58,7 +62,7 @@ fi
 
 echo -e "\n-------------\n| Packages  -\n-------------\n\n Wait a minute ...\n"
 
-packages="cobbler debmirror pykickstart cman dnsmasq"
+packages="cobbler debmirror pykickstart cman dnsmasq puppet-server ntp"
 
 for pak in $packages
 do
@@ -75,7 +79,7 @@ do
             if [ $? -eq 0 ]; then
                 echo -e "Install package \e[0;31;1m$pak\e[0m successfully"
             else
-                echo -e "\n ***   软件包 \e[0;31;1m$pak\e[0m 安装失败 请检查网络及YUM源  ***\n"
+                echo -e "\n ***  Install Package \e[0;31;1m$pak\e[0m Failed  ***\n"
                 exit
             fi
         fi
@@ -86,8 +90,18 @@ done
 
 echo -e "\n-------------\n| Services  -\n-------------"
 
-service cobblerd restart && chkconfig cobblerd on
-service dnsmasq restart && chkconfig dnsmasq on
+services="httpd cobblerd dnsmasq puppetmaster"
+
+for ser in $services
+do
+    service $ser restart
+    if [ $? -ne 0 ]; then
+        echo -e "\n ***  Start \e[0;31;1m$ser\e[0m Failed  ***\n"
+        exit
+    else
+        chkconfig $ser on
+    fi
+done
 
 # Fix cobbler check
 
@@ -103,7 +117,7 @@ sed -i -e 's|@arches=.*|#@arches=|' /etc/debmirror.conf
 # Dnsmasq
 
 sed -i "s/^dhcp-range=.*/dhcp-range=$IPSTART,$IPEND/g" /etc/cobbler/dnsmasq.template
-sed -i '/^dhcp-option=3,$next_server$/i\dhcp-ignore=tag:!known\nserver=8.8.8.8' /etc/cobbler/dnsmasq.template
+sed -i '/^dhcp-option=3,$next_server$/i\dhcp-ignore=#known\nserver=8.8.8.8' /etc/cobbler/dnsmasq.template
 
 sed -i 's/^module = manage_bind$/module = manage_dnsmasq/g' /etc/cobbler/modules.conf 
 sed -i 's/^module = manage_isc$/module = manage_dnsmasq/g' /etc/cobbler/modules.conf
@@ -113,24 +127,52 @@ sed -i 's/^module = manage_isc$/module = manage_dnsmasq/g' /etc/cobbler/modules.
 sed -i.bak 's/allow_dynamic_settings: 0/allow_dynamic_settings: 1/g' /etc/cobbler/settings
 service cobblerd restart >/dev/null 2>&1
 
-cobbler setting edit --name=server --value=$HOSTIP
-cobbler setting edit --name=next_server --value=$HOSTIP
-cobbler setting edit --name=pxe_just_once --value=1
+echo -e "\n-------------\n| Setting   -\n-------------"
 
-cobbler setting edit --name=manage_rsync --value=1
-cobbler setting edit --name=manage_dhcp --value=1
-cobbler setting edit --name=manage_dns --value=1
+settings1="server next_server"
+
+for sett1 in $settings1
+do
+    cobbler setting edit --name=$sett1 --value=$HOSTIP #>/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "\n ***  Set \e[0;31;1m$sett1\e[0m failed  ***\n"
+        exit
+    else
+        echo -e "Cobbler - \e[0;31;1m$sett1\e[0m has been set"
+    fi
+done
 
 cobbler setting edit --name=default_password_crypted --value="`openssl passwd -1 -salt "zeastion" "$NODEPASS"`"
 
+if [ $? -ne 0 ]; then
+    echo -e "\n ***  Set \e[0;31;1mdefault_password\e[0m failed  ***\n"
+    exit
+else
+    echo -e "Cobbler - \e[0;31;1mdefault_password\e[0m has been set"
+fi
+
+
+settings2="pxe_just_once manage_rsync manage_dhcp manage_dns puppet_auto_setup sign_puppet_certs_automatically remove_old_puppet_certs_automatically"
+
+for sett2 in $settings2
+do
+    cobbler setting edit --name=$sett2 --value=1 >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "\n ***  Set \e[0;31;1m$sett2\e[0m failed  ***\n"
+        exit
+    else
+        echo -e "Cobbler - \e[0;31;1m$sett2\e[0m has been set"
+    fi
+done
+
 # Sync
 
-service httpd restart && chkconfig httpd on >/dev/null 2>&1
-service cobblerd restart && cobbler sync 1>/dev/null # 2>&1
+service cobblerd restart >/dev/null 2>&1
+cobbler sync >/dev/null 2>&1
 
 err=$?
 if [ $err -ne 0 ]; then
-    echo -e "\n ***  Cobbler 部署失败 请检查日志  ***\n"
+    echo -e "\n ***  Deploy Cobbler Failed  ***\n"
     exit
 fi
 

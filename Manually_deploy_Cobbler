@@ -114,7 +114,7 @@ read-ethers
 addn-hosts = /var/lib/cobbler/cobbler_hosts
 
 dhcp-range=10.2.30.5,10.2.30.100
-dhcp-ignore=tag:!known			忽略不匹配mac
+dhcp-ignore=#known			忽略不匹配mac
 server=8.8.8.8
 dhcp-option=3,$next_server
 dhcp-lease-max=1000
