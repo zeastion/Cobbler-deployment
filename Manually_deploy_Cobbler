@@ -337,153 +337,9 @@ looking for /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/repodata/*comps*.xml
 Keeping repodata as-is :/var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/repodata
 *** TASK COMPLETE ***
 
-4- # cobbler system add --name=host01 --hostname=host01 --dns-name=host01.zea.cs2c --profile=CentOS-6.6-x86_64 --interface=eth0 --mac=00:50:56:29:B7:FF --ip-address=10.2.30.6 --subnet=255.255.0.0 --gateway=10.2.0.2 --static=1 --name-servers=8.8.8.8
+4- # cobbler system add --name=host01 --hostname=host01.server.cs2c --dns-name=host01.server.cs2c --profile=CentOS-6.6-x86_64 --interface=eth0 --mac=00:50:56:29:B7:FF --ip-address=10.2.30.6 --subnet=255.255.0.0 --gateway=10.2.0.2 --static=1 --name-servers=8.8.8.8
 
-5- # cobbler report
-distros:
-==========
-Name                           : CentOS-6.6-x86_64
-Architecture                   : x86_64
-TFTP Boot Files                : {}
-Breed                          : redhat
-Comment                        : 
-Fetchable Files                : {}
-Initrd                         : /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/images/pxeboot/initrd.img
-Kernel                         : /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/images/pxeboot/vmlinuz
-Kernel Options                 : {}
-Kernel Options (Post Install)  : {}
-Kickstart Metadata             : {'tree': 'http://@@http_server@@/cblr/links/CentOS-6.6-x86_64'}
-Management Classes             : []
-OS Version                     : rhel6
-Owners                         : ['admin']
-Red Hat Management Key         : <<inherit>>
-Red Hat Management Server      : <<inherit>>
-Template Files                 : {}
-
-
-profiles:
-==========
-Name                           : CentOS-6.6-x86_64
-TFTP Boot Files                : {}
-Comment                        : 
-DHCP Tag                       : default
-Distribution                   : CentOS-6.6-x86_64
-Enable gPXE?                   : 0
-Enable PXE Menu?               : 1
-Fetchable Files                : {}
-Kernel Options                 : {}
-Kernel Options (Post Install)  : {}
-Kickstart                      : /var/lib/cobbler/kickstarts/sample_end.ks
-Kickstart Metadata             : {}
-Management Classes             : []
-Management Parameters          : <<inherit>>
-Name Servers                   : []
-Name Servers Search Path       : []
-Owners                         : ['admin']
-Parent Profile                 : 
-Proxy                          : 
-Red Hat Management Key         : <<inherit>>
-Red Hat Management Server      : <<inherit>>
-Repos                          : []
-Server Override                : <<inherit>>
-Template Files                 : {}
-Virt Auto Boot                 : 1
-Virt Bridge                    : xenbr0
-Virt CPUs                      : 1
-Virt Disk Driver Type          : raw
-Virt File Size(GB)             : 5
-Virt Path                      : 
-Virt RAM (MB)                  : 512
-Virt Type                      : kvm
-
-
-systems:
-==========
-Name                           : host01
-TFTP Boot Files                : {}
-Comment                        : 
-Enable gPXE?                   : 0
-Fetchable Files                : {}
-Gateway                        : 10.2.0.2
-Hostname                       : host01
-Image                          : 
-IPv6 Autoconfiguration         : False
-IPv6 Default Device            : 
-Kernel Options                 : {}
-Kernel Options (Post Install)  : {}
-Kickstart                      : <<inherit>>
-Kickstart Metadata             : {}
-LDAP Enabled                   : False
-LDAP Management Type           : authconfig
-Management Classes             : <<inherit>>
-Management Parameters          : <<inherit>>
-Monit Enabled                  : False
-Name Servers                   : ['8.8.8.8']
-Name Servers Search Path       : []
-Netboot Enabled                : False
-Owners                         : ['admin']
-Power Management Address       : 
-Power Management ID            : 
-Power Management Password      : 
-Power Management Type          : ipmitool
-Power Management Username      : 
-Profile                        : CentOS-6.6-x86_64
-Proxy                          : <<inherit>>
-Red Hat Management Key         : <<inherit>>
-Red Hat Management Server      : <<inherit>>
-Repos Enabled                  : False
-Server Override                : <<inherit>>
-Status                         : production
-Template Files                 : {}
-Virt Auto Boot                 : <<inherit>>
-Virt CPUs                      : <<inherit>>
-Virt Disk Driver Type          : <<inherit>>
-Virt File Size(GB)             : <<inherit>>
-Virt Path                      : <<inherit>>
-Virt PXE Boot                  : 0
-Virt RAM (MB)                  : <<inherit>>
-Virt Type                      : <<inherit>>
-Interface =====                : eth0
-Bonding Opts                   : 
-Bridge Opts                    : 
-CNAMES                         : []
-DHCP Tag                       : 
-DNS Name                       : host.zea.cs2c
-Per-Interface Gateway          : 
-Master Interface               : 
-Interface Type                 : 
-IP Address                     : 10.2.30.6
-IPv6 Address                   : 
-IPv6 Default Gateway           : 
-IPv6 MTU                       : 
-IPv6 Prefix                    : 
-IPv6 Secondaries               : []
-IPv6 Static Routes             : []
-MAC Address                    : 00:50:56:29:B7:FF
-Management Interface           : False
-MTU                            : 
-Subnet Mask                    : 255.255.0.0
-Static                         : True
-Static Routes                  : []
-Virt Bridge                    : 
-
-
-repos:
-==========
-
-images:
-==========
-
-mgmtclasses:
-==========
-
-packages:
-==========
-
-files:
-==========
-
-6- # cat /var/lib/cobbler/kickstarts/centos6.ks
+5- # cat /var/lib/cobbler/kickstarts/centos6.ks
 #platform=x86, AMD64, or Intel EM64T
 # System authorization information
 auth  --useshadow  --enablemd5
@@ -604,9 +460,9 @@ $SNIPPET('post_anamon')
 $SNIPPET('kickstart_done')
 # End final steps
 
-7- # cobbler profile edit --name=CentOS-6.6-x86_64 --kickstart=/var/lib/cobbler/kickstarts/centos6.ks
+6- # cobbler profile edit --name=CentOS-6.6-x86_64 --kickstart=/var/lib/cobbler/kickstarts/centos6.ks
 
-8- # cobbler profile report
+7- # cobbler profile report
 Name                           : CentOS-6.6-x86_64
 TFTP Boot Files                : {}
 Comment                        : 
@@ -640,6 +496,216 @@ Virt Path                      :
 Virt RAM (MB)                  : 512
 Virt Type                      : kvm
 
-9- # cobbler sync
+8- 增加 Puppet 仓库
+   
+# cobbler repo add --mirror=http://yum.puppetlabs.com/el/6/products/x86_64/ --name=puppet_pro --arch=x86_64 --breed=yum
+# cobbler repo add --mirror=http://yum.puppetlabs.com/el/6/dependencies/x86_64/ --name=puppet_dep --arch=x86_64 --breed=yum
+# cobbler reposync
 
+9- 添加 Puppet 包
+
+# cp /var/www/cobbler/repo_mirror/puppet_dep/*.rpm /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/Packages -f
+# cp /var/www/cobbler/repo_mirror/puppet_pro/*.rpm /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/Packages -f
+
+# createrepo -s sha -o /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/ -g /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/repodata/9e2ddcc42b44eb150ebc61dde29c997318d8330b92205b3dbb3a87bcc06d10be-c6-x86_64-comps.xml /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/
+
+10- # cobbler sync
+
+11- # cobbler list
+distros:
+   CentOS-6.6-x86_64
+
+profiles:
+   CentOS-6.6-x86_64
+
+systems:
+   host01.server.cs2c
+
+repos:
+   puppet_dep
+   puppet_pro
+
+images:
+
+mgmtclasses:
+
+packages:
+
+files:
+
+12- # cobbler report
+distros:
+==========
+Name                           : CentOS-6.6-x86_64
+Architecture                   : x86_64
+TFTP Boot Files                : {}
+Breed                          : redhat
+Comment                        : 
+Fetchable Files                : {}
+Initrd                         : /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/images/pxeboot/initrd.img
+Kernel                         : /var/www/cobbler/ks_mirror/CentOS-6.6-x86_64/images/pxeboot/vmlinuz
+Kernel Options                 : {}
+Kernel Options (Post Install)  : {}
+Kickstart Metadata             : {'tree': 'http://@@http_server@@/cblr/links/CentOS-6.6-x86_64'}
+Management Classes             : []
+OS Version                     : rhel6
+Owners                         : ['admin']
+Red Hat Management Key         : <<inherit>>
+Red Hat Management Server      : <<inherit>>
+Template Files                 : {}
+
+
+profiles:
+==========
+Name                           : CentOS-6.6-x86_64
+TFTP Boot Files                : {}
+Comment                        : 
+DHCP Tag                       : default
+Distribution                   : CentOS-6.6-x86_64
+Enable gPXE?                   : 0
+Enable PXE Menu?               : 1
+Fetchable Files                : {}
+Kernel Options                 : {}
+Kernel Options (Post Install)  : {}
+Kickstart                      : /var/lib/cobbler/kickstarts/centos6.ks
+Kickstart Metadata             : {}
+Management Classes             : []
+Management Parameters          : <<inherit>>
+Name Servers                   : []
+Name Servers Search Path       : []
+Owners                         : ['admin']
+Parent Profile                 : 
+Proxy                          : 
+Red Hat Management Key         : <<inherit>>
+Red Hat Management Server      : <<inherit>>
+Repos                          : []
+Server Override                : <<inherit>>
+Template Files                 : {}
+Virt Auto Boot                 : 1
+Virt Bridge                    : xenbr0
+Virt CPUs                      : 1
+Virt Disk Driver Type          : raw
+Virt File Size(GB)             : 5
+Virt Path                      : 
+Virt RAM (MB)                  : 512
+Virt Type                      : kvm
+
+
+systems:
+==========
+Name                           : host01.server.cs2c
+TFTP Boot Files                : {}
+Comment                        : 
+Enable gPXE?                   : 0
+Fetchable Files                : {}
+Gateway                        : 10.2.0.2
+Hostname                       : host01.server.cs2c
+Image                          : 
+IPv6 Autoconfiguration         : False
+IPv6 Default Device            : 
+Kernel Options                 : {}
+Kernel Options (Post Install)  : {}
+Kickstart                      : <<inherit>>
+Kickstart Metadata             : {}
+LDAP Enabled                   : False
+LDAP Management Type           : authconfig
+Management Classes             : <<inherit>>
+Management Parameters          : <<inherit>>
+Monit Enabled                  : False
+Name Servers                   : ['8.8.8.8']
+Name Servers Search Path       : []
+Netboot Enabled                : True
+Owners                         : ['admin']
+Power Management Address       : 
+Power Management ID            : 
+Power Management Password      : 
+Power Management Type          : ipmitool
+Power Management Username      : 
+Profile                        : CentOS-6.6-x86_64
+Proxy                          : <<inherit>>
+Red Hat Management Key         : <<inherit>>
+Red Hat Management Server      : <<inherit>>
+Repos Enabled                  : False
+Server Override                : <<inherit>>
+Status                         : production
+Template Files                 : {}
+Virt Auto Boot                 : <<inherit>>
+Virt CPUs                      : <<inherit>>
+Virt Disk Driver Type          : <<inherit>>
+Virt File Size(GB)             : <<inherit>>
+Virt Path                      : <<inherit>>
+Virt PXE Boot                  : 0
+Virt RAM (MB)                  : <<inherit>>
+Virt Type                      : <<inherit>>
+Interface =====                : eth0
+Bonding Opts                   : 
+Bridge Opts                    : 
+CNAMES                         : []
+DHCP Tag                       : 
+DNS Name                       : host01.server.cs2c
+Per-Interface Gateway          : 
+Master Interface               : 
+Interface Type                 : 
+IP Address                     : 10.2.30.6
+IPv6 Address                   : 
+IPv6 Default Gateway           : 
+IPv6 MTU                       : 
+IPv6 Prefix                    : 
+IPv6 Secondaries               : []
+IPv6 Static Routes             : []
+MAC Address                    : 00:50:56:29:B7:FF
+Management Interface           : False
+MTU                            : 
+Subnet Mask                    : 255.255.0.0
+Static                         : True
+Static Routes                  : []
+Virt Bridge                    : 
+
+
+repos:
+==========
+Name                           : puppet_dep
+Apt Components (apt only)      : 
+Apt Dist Names (apt only)      : 
+Arch                           : x86_64
+Breed                          : yum
+Comment                        : 
+Createrepo Flags               : <<inherit>>
+Environment Variables          : {}
+Keep Updated                   : True
+Mirror                         : http://yum.puppetlabs.com/el/6/dependencies/x86_64/
+Mirror locally                 : True
+Owners                         : ['admin']
+Priority                       : 99
+RPM List                       : []
+Yum Options                    : {}
+
+Name                           : puppet_pro
+Apt Components (apt only)      : 
+Apt Dist Names (apt only)      : 
+Arch                           : x86_64
+Breed                          : yum
+Comment                        : 
+Createrepo Flags               : <<inherit>>
+Environment Variables          : {}
+Keep Updated                   : True
+Mirror                         : http://yum.puppetlabs.com/el/6/products/x86_64/
+Mirror locally                 : True
+Owners                         : ['admin']
+Priority                       : 99
+RPM List                       : []
+Yum Options                    : {}
+
+
+images:
+==========
+
+mgmtclasses:
+==========
+
+packages:
+==========
+
+files:
+==========
 

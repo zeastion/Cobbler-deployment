@@ -62,7 +62,7 @@ fi
 
 echo -e "\n-------------\n| Packages  -\n-------------\n\n Wait a minute ...\n"
 
-packages="cobbler debmirror pykickstart cman dnsmasq puppet-server ntp"
+packages="cobbler debmirror pykickstart cman puppet-server ntp dnsmasq"
 
 for pak in $packages
 do
@@ -85,6 +85,14 @@ do
         fi
     fi
 done
+
+# Puppet agent snippet
+
+sed -i "/# don/a \echo \"$HOSTIP\t$HOSTNAME\" >> /etc/hosts\necho \"    report = true\" >> /etc/puppet/puppet.conf\necho \"    server = $HOSTNAME\" >> /etc/puppet/puppet.conf\necho \"    pluginsync = true\" >> /etc/puppet/puppet.conf" /var/lib/cobbler/snippets/puppet_register_if_enabled
+
+# Autosign all nodes
+
+echo "*" > /etc/puppet/autosign.conf
 
 # Services
 
